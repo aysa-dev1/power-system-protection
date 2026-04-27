@@ -43,6 +43,7 @@ enable_testing()
 
 set(TEST_SOURCES
     tests/test_symmetrical_components.cpp
+    tests/test_network_model.cpp
     tests/test_short_circuit.cpp
     tests/test_overcurrent_relay.cpp
 )

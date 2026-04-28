@@ -5,7 +5,12 @@ namespace {
     const double TOLERANCE = 1e-9; 
 }
 
-TEST(NetworkModelTest, ComputeSequenceImpedances){
+
+// testcase: NetworkModelTest_001_ComputeSequenceImpedances
+
+TEST(NetworkModelTest, NetworkModelTest_001_ComputeSequenceImpedances){
+    
+    // Arrange
     psp::NetworkParameters network;
 
     // positive sequence
@@ -23,8 +28,11 @@ TEST(NetworkModelTest, ComputeSequenceImpedances){
     network.Z0_trafo = {0.1, 0.4};
     network.Z0_line = {0.6, 0.9};
 
+    // Act
     psp::SequenceImpedances results = psp::compute_sequence_impedances(network);
 
+
+    // Expect
     EXPECT_NEAR(results.Z1.real(), 0.35, TOLERANCE);
     EXPECT_NEAR(results.Z1.imag(), 1.0, TOLERANCE);
 

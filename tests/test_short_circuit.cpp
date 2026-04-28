@@ -19,42 +19,62 @@ class ShortCircuitTest : public ::testing::Test {
         }
 };
 
-TEST_F(ShortCircuitTest, 3PhaseFault) {
+// testcase: ShortCircuitTest_001_3PhaseFault
+TEST_F(ShortCircuitTest, ShortCircuitTest_001_3PhaseFault) {
+    
+    // Act
     psp::ShortCircuitResult result = psp::calculate_fault_3phase(Z, V);
 
+    // Expect
     double expected_mag = V / std::abs(Z.Z1);
     EXPECT_NEAR(result.I_magnitude, expected_mag, TOLERANCE);
 
 }
 
-TEST_F(ShortCircuitTest, 1PhaseToGroundFault){
+// testcase: ShortCircuitTest_002_1PhaseToGroundFault
+TEST_F(ShortCircuitTest, ShortCircuitTest_002_1PhaseToGroundFault){
+
+    // Act
     psp::ShortCircuitResult result = psp::calculate_fault_1phase_ground(Z, V);
     
+    // Expect
     std::complex<double> z_sum = Z.Z1 + Z.Z2 + Z.Z0;
     double expected_mag = std::abs(3.0 * V / z_sum);
 
     EXPECT_NEAR(result.I_magnitude, expected_mag, TOLERANCE);
 }
 
-TEST_F(ShortCircuitTest, 2PhaseFault){
+// testcase: ShortCircuitTest_003_2PhaseFault
+TEST_F(ShortCircuitTest, ShortCircuitTest_003_2PhaseFault){
+    
+    // Act
     psp::ShortCircuitResult result = psp::calculate_fault_2phase(Z, V);
 
+    // Expect
     double expected_mag = std::sqrt(3.0) * std::abs(V / (Z.Z1 + Z.Z2));
     EXPECT_NEAR(result.I_magnitude, expected_mag, TOLERANCE);
 }
 
-TEST_F(ShortCircuitTest, 2PhaseToGroundFault){
+// testcase: ShortCircuitTest_004_2PhaseToGroundFault
+TEST_F(ShortCircuitTest, ShortCircuitTest_004_2PhaseToGroundFault){
+    
+    // Act
     psp::ShortCircuitResult result = psp::calculate_fault_2phase_ground(Z, V);
 
+    // Expect
     std::complex<double> denominator = (Z.Z1 * Z.Z2) + (Z.Z1 * Z.Z0) + (Z.Z2 * Z.Z0);
     double expected_mag = std::abs((3.0 * V * Z.Z2) / denominator);
 
     EXPECT_NEAR(result.I_magnitude, expected_mag, TOLERANCE);
 }
 
-TEST_F(ShortCircuitTest, DivisionByZeroReturnsZero){
+// testcase: ShortCircuitTest_005_DivisionByZeroReturnsZero
+TEST_F(ShortCircuitTest, ShortCircuitTest_005_DivisionByZeroReturnsZero){
+    
+    // Arrange
     psp::SequenceImpedances Z_zero = {{0,0}, {0,0}, {0,0}};
 
+    // Act/Expect
     EXPECT_DOUBLE_EQ(psp::calculate_fault_3phase(Z_zero, V).I_magnitude, 0.0);
 
     EXPECT_DOUBLE_EQ(psp::calculate_fault_1phase_ground(Z_zero, V).I_magnitude, 0.0);
@@ -64,11 +84,14 @@ TEST_F(ShortCircuitTest, DivisionByZeroReturnsZero){
     EXPECT_DOUBLE_EQ(psp::calculate_fault_2phase_ground(Z_zero, V).I_magnitude, 0.0);
 }
 
-TEST_F(ShortCircuitTest, MagnitudePlausibility){
+// testcase: ShortCircuitTest_006_MagnitudePlausibility
+TEST_F(ShortCircuitTest, ShortCircuitTest_006_MagnitudePlausibility){
     
+    // Act
     psp::ShortCircuitResult res3L = psp::calculate_fault_3phase(Z, V);
 
     psp::ShortCircuitResult res2L = psp::calculate_fault_2phase(Z, V);
 
+    // Expect
     EXPECT_GT(res3L.I_magnitude, res2L.I_magnitude);
 }
